@@ -108,7 +108,7 @@ def command_create(store: QueryStore, args: argparse.Namespace) -> int:
 
 
 def command_list(store: QueryStore, args: argparse.Namespace) -> int:
-    status = QueryStatus.from_value(args.status) if args.status else None
+    status = parse_status(args.status) if args.status else None
     queries = list(store.list(status=status))
     if args.format == "json":
         print(json.dumps([query.to_dict() for query in queries], indent=2))
@@ -131,7 +131,7 @@ def command_update_status(store: QueryStore, args: argparse.Namespace) -> int:
     if not query:
         print(f"Query {args.query_id} not found")
         return 1
-    new_status = QueryStatus.from_value(args.status)
+    new_status = parse_status(args.status)
     if not can_transition(query.status, new_status):
         allowed = ", ".join(status.value for status in allowed_transitions(query.status))
         print(
@@ -230,10 +230,24 @@ def print_status_help() -> None:
     print("Allowed statuses:", ", ".join(as_status_list()))
 
 
+class InvalidStatusError(ValueError):
+    pass
+
+
+def parse_status(value: str) -> QueryStatus:
+    try:
+        return QueryStatus.from_value(value)
+    except ValueError as exc:
+        raise InvalidStatusError(str(exc)) from exc
+
+
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except ValueError as exc:
+    except InvalidStatusError as exc:
         print(exc)
         print_status_help()
+        raise SystemExit(2)
+    except ValueError as exc:
+        print(exc)
         raise SystemExit(2)
