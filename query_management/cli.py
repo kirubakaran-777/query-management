@@ -227,7 +227,7 @@ def _shorten(value: str, width: int) -> str:
 
 
 class InvalidStatusError(Exception):
-    pass
+    """Raised when an invalid status value is provided."""
 
 
 def parse_status(value: str) -> QueryStatus:
@@ -237,7 +237,7 @@ def parse_status(value: str) -> QueryStatus:
         raise InvalidStatusError(str(exc)) from exc
 
 
-def print_status_help() -> None:
+def print_allowed_statuses() -> None:
     print("Allowed statuses:", ", ".join(as_status_list()))
 
 
@@ -246,7 +246,7 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except InvalidStatusError as exc:
         print(exc)
-        print_status_help()
+        print_allowed_statuses()
         raise SystemExit(2)
     except ValueError as exc:
         print(exc)
