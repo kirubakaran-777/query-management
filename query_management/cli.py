@@ -12,10 +12,6 @@ from .store import QueryStore
 from .workflow import allowed_transitions, can_transition, render_workflow_graph
 
 
-class InvalidStatusError(Exception):
-    """Raised when an invalid status value is provided."""
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Query management application",
@@ -234,20 +230,13 @@ def parse_status(value: str) -> QueryStatus:
     try:
         return QueryStatus.from_value(value)
     except ValueError as exc:
-        raise InvalidStatusError(str(exc)) from exc
-
-
-def print_allowed_statuses() -> None:
-    print("Allowed statuses:", ", ".join(as_status_list()))
+        allowed = ", ".join(as_status_list())
+        raise ValueError(f"{exc} Allowed statuses: {allowed}") from exc
 
 
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except InvalidStatusError as exc:
-        print(exc)
-        print_allowed_statuses()
-        sys.exit(2)
     except ValueError as exc:
         print(exc)
         sys.exit(2)
