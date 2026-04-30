@@ -7,7 +7,7 @@ from pathlib import Path
 from textwrap import shorten
 from uuid import uuid4
 
-from .models import Query, QueryStatus, as_status_list
+from .models import Query, QueryStatus
 from .store import QueryStore
 from .workflow import allowed_transitions, can_transition, render_workflow_graph
 
@@ -227,11 +227,7 @@ def _shorten(value: str, width: int) -> str:
 
 
 def parse_status(value: str) -> QueryStatus:
-    try:
-        return QueryStatus.from_value(value)
-    except ValueError as exc:
-        allowed = ", ".join(as_status_list())
-        raise ValueError(f"{exc} Allowed statuses: {allowed}") from exc
+    return QueryStatus.from_value(value)
 
 
 if __name__ == "__main__":
