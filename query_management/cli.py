@@ -226,11 +226,7 @@ def _shorten(value: str, width: int) -> str:
     return shorten(value, width=width, placeholder="…")
 
 
-def print_status_help() -> None:
-    print("Allowed statuses:", ", ".join(as_status_list()))
-
-
-class InvalidStatusError(ValueError):
+class InvalidStatusError(Exception):
     pass
 
 
@@ -239,6 +235,10 @@ def parse_status(value: str) -> QueryStatus:
         return QueryStatus.from_value(value)
     except ValueError as exc:
         raise InvalidStatusError(str(exc)) from exc
+
+
+def print_status_help() -> None:
+    print("Allowed statuses:", ", ".join(as_status_list()))
 
 
 if __name__ == "__main__":
