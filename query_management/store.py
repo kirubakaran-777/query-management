@@ -41,7 +41,7 @@ class QueryStore:
     def get(self, query_id: str) -> Query | None:
         return self.queries.get(query_id)
 
-    def list(self, status: QueryStatus | None = None) -> Iterable[Query]:
+    def list_queries(self, status: QueryStatus | None = None) -> Iterable[Query]:
         queries = self.queries.values()
         if status is not None:
             queries = [query for query in queries if query.status == status]

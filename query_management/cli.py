@@ -12,6 +12,10 @@ from .store import QueryStore
 from .workflow import allowed_transitions, can_transition, render_workflow_graph
 
 
+class InvalidStatusError(Exception):
+    """Raised when an invalid status value is provided."""
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Query management application",
@@ -109,7 +113,7 @@ def command_create(store: QueryStore, args: argparse.Namespace) -> int:
 
 def command_list(store: QueryStore, args: argparse.Namespace) -> int:
     status = parse_status(args.status) if args.status else None
-    queries = list(store.list(status=status))
+    queries = list(store.list_queries(status=status))
     if args.format == "json":
         print(json.dumps([query.to_dict() for query in queries], indent=2))
         return 0
@@ -224,10 +228,6 @@ def print_details(query: Query) -> None:
 
 def _shorten(value: str, width: int) -> str:
     return shorten(value, width=width, placeholder="…")
-
-
-class InvalidStatusError(Exception):
-    """Raised when an invalid status value is provided."""
 
 
 def parse_status(value: str) -> QueryStatus:
