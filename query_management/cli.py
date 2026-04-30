@@ -243,11 +243,11 @@ def print_allowed_statuses() -> None:
 
 if __name__ == "__main__":
     try:
-        raise SystemExit(main())
+        sys.exit(main())
     except InvalidStatusError as exc:
         print(exc)
         print_allowed_statuses()
-        raise SystemExit(2)
+        sys.exit(2)
     except ValueError as exc:
         print(exc)
-        raise SystemExit(2)
+        sys.exit(2)
